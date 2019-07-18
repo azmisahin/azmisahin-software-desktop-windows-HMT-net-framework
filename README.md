@@ -1,4 +1,4 @@
-# ![Logo](media/favicon.png)
+# ![Logo](docs/media/favicon.png)
 
 ## HMT.Tracking - Hardware Management Tool Tracking
 
