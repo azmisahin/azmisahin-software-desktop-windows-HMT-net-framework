@@ -1,5 +1,6 @@
 ﻿namespace HMT.Windows.Desktop.Tracking {
     using System;
+    using System.Configuration;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows;
@@ -179,6 +180,9 @@
             // Job Initalize
             hardware = new PrinterJob();
 
+            // Hardware Watch Authentication
+            hardwareWatchAuthentication();
+
             // Signal Setup
             hardware
                 .Signal += Hardware_Signal;
@@ -187,6 +191,70 @@
             hardware
                 .Watcher
                 .Watch();
+        }
+
+        /// <summary>
+        /// Hardware Authentication
+        /// </summary>
+        private void hardwareWatchAuthentication() {
+
+            #region Define Authentication Parameters
+
+            // Computer User Name
+            string user = getAppSetting("User");
+
+            // Computer Password
+            string password = getAppSetting("Password");
+
+            // Computer Name or Ip Address Or Local Connetection "."
+            string computer = getAppSetting("Computer");
+
+            // Active Directory Domain Name or Workgorup Name
+            string domain = getAppSetting("Domain");
+
+            #endregion
+
+            // check app data
+            bool isAuthentication = (
+                string.IsNullOrEmpty(user) ||
+                string.IsNullOrEmpty(password) ||
+                string.IsNullOrEmpty(computer) ||
+                string.IsNullOrEmpty(domain)
+                ) && true ? false : true;
+
+            // Hardwate Watch Authentication Set
+            if (isAuthentication) {
+                hardware
+                    .Watcher
+                    .Authentication(user, password, computer, domain);
+            }
+        }
+
+        /// <summary>
+        /// Get Application Setting
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        /// System.Configuration 4.0.0.0
+        /// <see cref="https://docs.microsoft.com/tr-tr/dotnet/api/system.configuration.configurationmanager.appsettings/>
+        private static string getAppSetting(string key) {
+            // Return Application Setting Value
+            string result = "";
+
+            try {
+                // Read Application Settings
+                System.Collections.Specialized.NameValueCollection appSettings = ConfigurationManager.AppSettings;
+
+                // Read Key
+                result = appSettings[key] ?? "Not Found";
+            }
+            catch (ConfigurationErrorsException) {
+                Console.WriteLine("Error reading app settings");
+                result = null;
+            }
+
+            // Return Result
+            return result;
         }
 
         /// <summary>
@@ -239,7 +307,7 @@
             #endregion
 
             #region Run Other Task Trigger
-            _ = SendAsync(e.Flag);
+            _ = SendAsync(e);
             #endregion
 
         }
@@ -247,14 +315,14 @@
         /// <summary>
         /// Any Task
         /// </summary>
-        private async Task SendAsync(object arg) {
+        private async Task SendAsync(PrintJobEvent arg) {
 
             // Run
             await Task.Run(() => {
                 Console
                 .WriteLine(
                     $"Run {Thread.CurrentThread.ManagedThreadId} Thread" +
-                    $"With {arg} argument");
+                    $"With {arg.Flag} argument: {arg.StatusMask}");
             });
         }
 
