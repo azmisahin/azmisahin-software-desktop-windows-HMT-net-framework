@@ -1,8 +1,12 @@
 ﻿namespace HMT.Windows.Desktop.Tracking {
     using System;
     using System.Configuration;
+    using System.IO;
+    using System.Net;
+    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+    using System.Web.Script.Serialization;
     using System.Windows;
     using HMT.Hardware;
 
@@ -323,6 +327,49 @@
                 .WriteLine(
                     $"Run {Thread.CurrentThread.ManagedThreadId} Thread" +
                     $"With {arg.Flag} argument: {arg.StatusMask}");
+
+                #region Send Remote Web Api Connection
+
+                // String Data
+                string data = "";
+                // Api Adres
+                string api = "";
+                // Remote Uri
+                Uri uri;
+
+                try {
+                    // Initialize Data Serializer
+                    JavaScriptSerializer serializer = new JavaScriptSerializer();
+                    // data set
+                    data = serializer.Serialize(arg);
+                    // api set
+                    api = getAppSetting("api");
+                    // Remote Web Service
+                    uri = new Uri(api);
+                    // Create a request using a URL that can receive a post. 
+                    HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(uri);
+                    // Request method
+                    request.Method = "post";
+                    // Convert POST data to a byte array.
+                    byte[] byteArray = Encoding.UTF8.GetBytes(data);
+                    // Set the ContentType property of the WebRequest.
+                    request.ContentType = "application/json; charset=UTF-8";
+                    request.Accept = "application/json";
+                    // Set the ContentLength property of the WebRequest.
+                    request.ContentLength = byteArray.Length;
+                    // Get the request stream.
+                    Stream dataStream = request.GetRequestStream();
+                    // Write the data to the request stream.
+                    dataStream.Write(byteArray, 0, byteArray.Length);
+                    // Close the Stream object.
+                    dataStream.Close();
+                }
+                catch (Exception) {
+
+                    Console.WriteLine($"Connection Fail {api}");
+                }
+                #endregion
+
             });
         }
 
