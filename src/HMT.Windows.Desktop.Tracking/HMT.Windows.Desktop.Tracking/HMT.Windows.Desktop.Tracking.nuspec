@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package >
+    <metadata>
+        <id>$id$</id>
+        <version>$version$</version>
+        <title>$title$</title>
+        <authors>$author$</authors>
+        <owners>$author$</owners>
+        <copyright>$copyright$</copyright>
+        <description>$description$</description>
+        <tags>computer automate hardware easy interface management tool it specialist operation monitoring reporting windows</tags>
+        <iconUrl>https://azmisahin.github.io/favicon.png</iconUrl>
+        <projectUrl>https://azmisahin.github.io/azmisahin-software-desktop-windows-HMT-net-framework/</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    </metadata>
+</package>
