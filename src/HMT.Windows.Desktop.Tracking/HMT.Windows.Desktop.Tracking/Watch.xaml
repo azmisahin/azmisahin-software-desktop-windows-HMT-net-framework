@@ -11,9 +11,37 @@
         Width="400"
         Icon="Resources/favicon.png"
         Background="{x:Null}"
-        FontSize="14" FontFamily="Courier New"
+        FontSize="12" FontFamily="Courier New"
         >
     <Grid>
-
+        <!-- cref="https://docs.microsoft.com/tr-tr/dotnet/api/system.windows.controls.border?view=netframework-4.8" -->
+        <Border
+                BorderBrush="Aqua"
+                BorderThickness="2"
+                CornerRadius="45,0,45,0"
+                Padding="15,5,5,50"
+                >
+            <Border.Background>
+                <ImageBrush ImageSource="Resources/tree.png"/>
+            </Border.Background>
+            <StackPanel Margin="0">
+                <StackPanel>
+                    <Label x:Name="lblJobStatus" HorizontalContentAlignment="Center" Foreground="Red" FontWeight="Black">Printer Monitoring</Label>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label x:Name="lblPriority" Foreground="Orange">1</Label>
+                    <Label x:Name="lblDocument" Foreground="Black">we should not cut trees.pdf</Label>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label x:Name="lblUser" Foreground="Fuchsia">Human</Label>
+                    <Label x:Name="lblHost" Foreground="Purple">WORLD</Label>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label x:Name="lblTotalPages" Foreground="DarkGreen">~0</Label>
+                    <Label x:Name="lblTimeSubmitted" Foreground="DarkGray">1.1.0001 00:00</Label>
+                    <Label x:Name="lblJobId" Foreground="Blue">1</Label>
+                </StackPanel>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>
