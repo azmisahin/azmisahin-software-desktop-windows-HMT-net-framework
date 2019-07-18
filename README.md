@@ -1,6 +1,6 @@
 # ![Logo](docs/media/favicon.png)
 
-## HMT.Tracking - Hardware Management Tool Tracking
+## HMT.Windows.Desktop.Tracking - Hardware Management Tool Tracking
 
 A management tool that provides easy access to hardware interfaces to automate management tasks on local or remote computers.
 
