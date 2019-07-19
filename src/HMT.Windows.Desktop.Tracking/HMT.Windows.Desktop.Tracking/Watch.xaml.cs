@@ -8,6 +8,7 @@
     using System.Threading.Tasks;
     using System.Web.Script.Serialization;
     using System.Windows;
+    using System.Windows.Threading;
     using HMT.Hardware;
 
     /// <summary>
@@ -68,6 +69,11 @@
         }
 
         /// <summary>
+        /// DispatcherTimer setup
+        /// </summary>
+        DispatcherTimer dispatcherTimer;
+
+        /// <summary>
         /// Initialize Windows Startup Event
         /// </summary>
         private void InitializeWindowsStartupEvent() {
@@ -78,6 +84,27 @@
             // The window is kept at the highest level.
             // see cref="https://docs.microsoft.com/tr-tr/dotnet/api/system.windows.window.topmost"
             Topmost = true;
+
+            // Hide 10 seconds after you start.
+            // see cref="https://docs.microsoft.com/en-us/dotnet/api/system.windows.threading.dispatchertimer"
+            dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+            dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 10);
+            dispatcherTimer.Start();
+        }
+
+        /// <summary>
+        /// Timer Tick
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dispatcherTimer_Tick(object sender, EventArgs e) {
+
+            // Hide
+            clearContent();
+
+            //  DispatcherTimer setup
+            dispatcherTimer.Stop();
         }
 
         /// <summary>
