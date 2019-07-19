@@ -109,6 +109,7 @@
         /// <param name="e"></param>
         private void Bind(PrintJobEvent e) {
 
+ 
             #region Define Event Data
             // Job Status       [ For example: Spooling ] 
             string stringJobStatus = $"{e.JobStatus}";
@@ -138,6 +139,11 @@
 
             // cref="https://docs.microsoft.com/tr-tr/dotnet/api/system.windows.threading.dispatcher"
             Dispatcher.Invoke(() => {
+
+                // Show on his terminating mission
+                if (WindowState == WindowState.Minimized)
+                    WindowState = WindowState.Normal;
+
                 lblDocument.Content = stringDocument;
                 lblHost.Content = stringHost;
                 lblJobId.Content = stringJobId;
@@ -156,6 +162,10 @@
 
             // cref="https://docs.microsoft.com/tr-tr/dotnet/api/system.windows.threading.dispatcher"
             Dispatcher.Invoke(() => {
+
+                // Hide on his terminating mission.
+                this.WindowState = WindowState.Minimized;
+
                 lblJobStatus.Content = $"";
                 lblPriority.Content = $"";
                 lblDocument.Content = $"";
@@ -165,6 +175,7 @@
                 lblTotalPages.Content = $"";
                 lblTimeSubmitted.Content = $"";
             });
+
         }
         #endregion
 
