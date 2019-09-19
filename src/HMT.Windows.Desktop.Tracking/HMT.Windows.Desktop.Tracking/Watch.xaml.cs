@@ -101,7 +101,7 @@
         private void dispatcherTimer_Tick(object sender, EventArgs e) {
 
             // Hide
-            clearContent();
+            finalAndClose();
 
             //  DispatcherTimer setup
             dispatcherTimer.Stop();
@@ -136,7 +136,7 @@
         /// <param name="e"></param>
         private void Bind(PrintJobEvent e) {
 
- 
+
             #region Define Event Data
             // Job Status       [ For example: Spooling ] 
             string stringJobStatus = $"{e.JobStatus}";
@@ -185,7 +185,7 @@
         /// <summary>
         /// Clear Content
         /// </summary>
-        private void clearContent() {
+        private void finalAndClose() {
 
             // cref="https://docs.microsoft.com/tr-tr/dotnet/api/system.windows.threading.dispatcher"
             Dispatcher.Invoke(() => {
@@ -309,6 +309,8 @@
             // Bind Event Data
             Bind(e);
 
+            Console.WriteLine($"Flag -> {e.Flag} - {e.Size}");
+
             #region Check Signal Flag
             switch (e.Flag) {
                 case PrintJobEvent.StatusFlag.Paused:
@@ -318,6 +320,15 @@
                 case PrintJobEvent.StatusFlag.Deleting:
                     break;
                 case PrintJobEvent.StatusFlag.Spooling:
+                    
+                    if (e.StatusMask == 8 && e.TotalPages == 0) {
+                        finalAndClose();
+                        Console.WriteLine($"1 Pages Printed.[{e.Size}]");
+
+                        #region Run Other Task Trigger
+                        _ = SendAsync(e);
+                        #endregion
+                    }
                     break;
                 case PrintJobEvent.StatusFlag.Printing:
                     break;
@@ -335,23 +346,31 @@
                     break;
                 case PrintJobEvent.StatusFlag.Restart:
                     break;
-                case PrintJobEvent.StatusFlag.Continue: // Signal CONTINUE
+                case PrintJobEvent.StatusFlag.Idled:
+                    finalAndClose();
+                    Console.WriteLine($"{e.PagesPrinted} Pages Printed.[{e.Size}] Total : {e.TotalPages}");
+
+                    #region Run Other Task Trigger
+                    _ = SendAsync(e);
+                    #endregion
+
                     break;
-                case PrintJobEvent.StatusFlag.Finalize: // Signal END
-                    clearContent();
+                case PrintJobEvent.StatusFlag.Continue:
                     break;
-                default:                                // Signal START
-                    if (e.StatusMask == 0 && e.TotalPages == 0) {
-                        // First data
+                case PrintJobEvent.StatusFlag.Finalize:
+                    if (e.Size == 0) {
+                        finalAndClose();
+                        Console.WriteLine($"{e.PagesPrinted} Pages Printed.[{e.Size}] Total : {e.TotalPages}");
+
+                        #region Run Other Task Trigger
+                        _ = SendAsync(e);
+                        #endregion
                     }
+                    break;
+                default:
                     break;
             }
             #endregion
-
-            #region Run Other Task Trigger
-            _ = SendAsync(e);
-            #endregion
-
         }
 
         /// <summary>
